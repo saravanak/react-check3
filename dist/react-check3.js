@@ -71,25 +71,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    propTypes: {
 	        shouldSubmit: React.PropTypes.func,
-	        nextValue   : React.PropTypes.func,
-
-	        defaultValue: function(props, propName) {
-	            if ( !hasOwn(props, 'defaultValue') && !hasOwn(props, 'value')){
-
-	                if (hasOwn(props, 'checked')){
-	                    return new Error('You specified "checked" property instead of "value"! Please specify "value"')
-	                }
-
-	                if (hasOwn(props, 'defaultChecked')){
-	                    return new Error('You specified "defaultChecked" property instead of "defaultValue"! Please specify "defaultValue"')
-	                }
-	            }
-	        },
+	        nextValue   : React.PropTypes.func
 	    },
 
 	    getInitialState: function() {
+	        var props = this.props
+	        var hasDefaultValue = hasOwn(props, 'defaultValue')
+	        var hasDefaultChecked = !hasDefaultValue && hasOwn(props, 'defaultChecked')
+
 	        return {
-	            defaultValue: this.props.defaultValue,
+	            defaultValue: hasDefaultChecked?
+	                            props.defaultChecked:
+	                            props.defaultValue || props.uncheckedValue
+
 	        }
 	    },
 
@@ -98,7 +92,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return {
 	            defaultCheckboxStyle: {
 	                margin: 3,
-	                display: 'inline-block'
+	                display: 'inline-block',
+	                cursor: 'pointer'
 	            },
 
 	            defaultStyle: {
@@ -134,7 +129,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            indeterminateValue: null,
 
 	            defaultIconStyle: {
-	                cursor: 'pointer'
 	            },
 
 	            defaultIconProps: {
@@ -258,7 +252,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        ;(this.props.onChange || emptyFn)(value, event)
 
-	        if (!hasOwn(this.props, 'value') && hasOwn(this.props, 'defaultValue')){
+	        if (!hasOwn(this.props, 'value')){
 	            this.setState({
 	                defaultValue: value
 	            })
@@ -296,6 +290,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (hasOwn(props, 'value')){
 	            value = props.value
+	        } else if (hasOwn(props, 'checked')){
+	            value = props.checked
 	        } else {
 	            value = state.defaultValue
 	        }
