@@ -23,7 +23,11 @@ function nextValue(value, oldValue, info){
 
 var App = React.createClass({
 
-    onChange: function(value, oldValue){
+    onChange: function(value){
+
+        if (value && value.target){
+            value = value.target.checked
+        }
 
         checked = value
 
@@ -31,18 +35,18 @@ var App = React.createClass({
     },
 
     onClick: function() {
-        // console.log('clicked')
+        console.log('clicked')
         this.setState({})
     },
 
     render: function() {
         return (
             <form className="App" style={{padding: 20}} onClick={this.onClick}>
-                <Check nextValuex={nextValue} name="X" defaultChecked={checked} onChangex={this.onChange}>
+                <Check name="X" checked={checked} onChange={this.onChange}>
                     checked
                 </Check>
-                <br />
-                <input type="checkbox" />test
+                <input type="checkbox" checked={checked} onChange={this.onChange}/>
+
             </form>
         )
     }
