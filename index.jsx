@@ -31,14 +31,16 @@ var App = React.createClass({
     },
 
     onClick: function() {
-        console.log('clicked')
+        // console.log('clicked')
         this.setState({})
     },
 
     render: function() {
         return (
             <form className="App" style={{padding: 20}} onClick={this.onClick}>
-                <Check nextValuex={nextValue} supportIndeterminate={true} name="X" onChange={this.onChange} />checked
+                <Check nextValuex={nextValue} name="X" value={checked} onChangex={this.onChange}>
+                    checked
+                </Check>
                 <br />
                 <input type="checkbox" />test
             </form>

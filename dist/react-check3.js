@@ -96,12 +96,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getDefaultProps: function() {
 
 	        return {
-	            defaultStyle: {
+	            defaultCheckboxStyle: {
 	                margin: 3,
 	                display: 'inline-block'
 	            },
 
+	            defaultStyle: {
+	                display: 'inline-block'
+	            },
+
 	            supportIndeterminate: true,
+	            childrenAfter: true,
 
 	            nextValue: function(oldValue, props) {
 	                if (oldValue === props.checkedValue){
@@ -152,17 +157,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    },
 
-	    render: function(){
+	    prepareCheckboxProps: function(props) {
+	        if (!props.children){
+	            return props
+	        }
 
-	        var props = this.prepareProps(this.props, this.state)
+	        return {
+	            style: assign({}, props.defaultCheckboxStyle, props.checkboxStyle)
+	        }
+	    },
+
+	    renderCheckbox: function(props) {
+	        var checkboxProps = this.prepareCheckboxProps(props)
 	        var input = this.renderHiddenInput(props)
+	        var img = this.renderImg(props)
 
-	        var img   = this.renderImg(props)
-
-	        return React.createElement("div", React.__spread({},  props), 
+	        return React.createElement("div", React.__spread({},  checkboxProps), 
 	            input, 
 	            img
 	        )
+	    },
+
+	    render: function(){
+
+	        var props    = this.prepareProps(this.props, this.state)
+	        var checkbox = this.renderCheckbox(props)
+
+	        var childrenBefore
+
+	        if (props.children){
+	            childrenBefore = (hasOwn(props, 'childrenBefore') && props.childrenBefore === true) || props.childrenAfter === false
+	        }
+
+	        return props.children?
+	                React.createElement("div", React.__spread({},  props), 
+	                    childrenBefore? props.children: null, 
+	                    checkbox, 
+	                    childrenBefore? null: props.children
+	                ):
+	                checkbox
 	    },
 
 	    renderHiddenInput: function(props) {
@@ -199,9 +232,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    prepareIconProps: function(props) {
 	        var iconProps = {
-	            src: this.getIconSrc(props.value),
-	            style: this.prepareIconStyle(props),
-	            onClick: this.handleIconClick.bind(this, props)
+	            src    : this.getIconSrc(props.value),
+	            style  : this.prepareIconStyle(props)
 	        }
 
 	        if (props.iconClassName){
@@ -211,18 +243,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return iconProps
 	    },
 
-	    handleIconClick: function(props, event) {
-	        var value = props.nextValue(props.value, props)
+	    handleClick: function(props, event) {
+	        this.trigger(props.value)
 
-	        ;(props.onChange || emptyFn)(value, event)
+	        ;(this.props.onClick || emptyFn)(event)
+	    },
+
+	    trigger: function(value) {
+	        if (!arguments.length){
+	            value = this.prepareValue(this.props, this.state)
+	        }
+
+	        value = this.props.nextValue(value, this.props)
+
+	        ;(this.props.onChange || emptyFn)(value, event)
 
 	        if (!hasOwn(this.props, 'value') && hasOwn(this.props, 'defaultValue')){
 	            this.setState({
 	                defaultValue: value
 	            })
 	        }
-
-	        props.stopPropagation && event.stopPropagation()
 	    },
 
 	    getIconSrc: function(value) {
@@ -241,10 +281,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        assign(props, thisProps)
 
-	        props.value = this.prepareValue(props, state)
-
-	        props.style = this.prepareStyle(props)
+	        props.value       = this.prepareValue(props, state)
 	        props.submitValue = this.prepareSubmitValue(props)
+	        props.style       = this.prepareStyle(props)
+
+	        props.onClick = this.handleClick.bind(this, props)
 
 	        return props
 	    },
@@ -262,6 +303,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (value === props.checkedValue){
 	            return value
 	        }
+
 	        if (props.supportIndeterminate && value === props.indeterminateValue){
 	            return value
 	        }
@@ -294,7 +336,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var style = {}
 
-	        assign(style, props.defaultStyle, props.style)
+	        var defaultCheckboxStyle
+	        var checkboxStyle
+
+	        if (!props.children){
+	            defaultCheckboxStyle = props.defaultCheckboxStyle
+	            checkboxStyle        = props.checkboxStyle
+	        }
+
+	        assign(style, defaultCheckboxStyle, props.defaultStyle, checkboxStyle, props.style)
 
 	        return style
 	    }
