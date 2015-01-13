@@ -38,7 +38,7 @@ var App = React.createClass({
     render: function() {
         return (
             <form className="App" style={{padding: 20}} onClick={this.onClick}>
-                <Check nextValuex={nextValue} name="X" value={checked} onChangex={this.onChange}>
+                <Check nextValuex={nextValue} name="X" defaultChecked={checked} onChangex={this.onChange}>
                     checked
                 </Check>
                 <br />

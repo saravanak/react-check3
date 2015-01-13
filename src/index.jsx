@@ -15,20 +15,22 @@ module.exports = React.createClass({
 
     propTypes: {
         shouldSubmit: React.PropTypes.func,
-        nextValue   : React.PropTypes.func,
+        nextValue   : React.PropTypes.func
 
-        defaultValue: function(props, propName) {
-            if ( !hasOwn(props, 'defaultValue') && !hasOwn(props, 'value')){
+        // ,
 
-                if (hasOwn(props, 'checked')){
-                    return new Error('You specified "checked" property instead of "value"! Please specify "value"')
-                }
+        // defaultValue: function(props, propName) {
+        //     if ( !hasOwn(props, 'defaultValue') && !hasOwn(props, 'value')){
 
-                if (hasOwn(props, 'defaultChecked')){
-                    return new Error('You specified "defaultChecked" property instead of "defaultValue"! Please specify "defaultValue"')
-                }
-            }
-        },
+        //         if (hasOwn(props, 'checked')){
+        //             return new Error('You specified "checked" property instead of "value"! Please specify "value"')
+        //         }
+
+        //         if (hasOwn(props, 'defaultChecked')){
+        //             return new Error('You specified "defaultChecked" property instead of "defaultValue"! Please specify "defaultValue"')
+        //         }
+        //     }
+        // },
     },
 
     getInitialState: function() {
@@ -202,7 +204,7 @@ module.exports = React.createClass({
 
         ;(this.props.onChange || emptyFn)(value, event)
 
-        if (!hasOwn(this.props, 'value') && hasOwn(this.props, 'defaultValue')){
+        if (!hasOwn(this.props, 'value')){
             this.setState({
                 defaultValue: value
             })
@@ -238,10 +240,23 @@ module.exports = React.createClass({
 
         var value
 
-        if (hasOwn(props, 'value')){
+        var hasValue        = hasOwn(props, 'value')
+        var hasDefaultValue = hasOwn(state, 'defaultValue')
+        var defaultValue    = state.defaultValue
+
+        if (!hasValue && !hasDefaultValue){
+            if (hasOwn(props, 'checked')){
+                props.value = props.checked
+                hasValue = true
+            } else if (hasOwn(props, 'defaultChecked')){
+                defaultValue = props.defaultChecked
+            }
+        }
+
+        if (hasValue){
             value = props.value
         } else {
-            value = state.defaultValue
+            value = defaultValue
         }
 
         if (value === props.checkedValue){
