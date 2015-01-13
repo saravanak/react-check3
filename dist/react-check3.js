@@ -71,7 +71,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    propTypes: {
 	        shouldSubmit: React.PropTypes.func,
-	        nextValue   : React.PropTypes.func
+	        nextValue   : React.PropTypes.func,
+	        disabled    : React.PropTypes.bool
 	    },
 
 	    getInitialState: function() {
@@ -90,11 +91,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getDefaultProps: function() {
 
 	        return {
+	            shouldSubmit: function(value, props) {
+	                if (!props.name || props.disabled){
+	                    return false
+	                }
+	            },
 	            defaultCheckboxStyle: {
 	                margin: 3,
 	                display: 'inline-block',
 	                cursor: 'pointer'
 	            },
+
+	            defaultDisabledCheckboxStyle: {
+	                opacity: 0.5,
+	                cursor: 'auto'
+	            },
+
+	            checkboxStyle: null,
+	            disabledCheckboxStyle: null,
 
 	            defaultStyle: {
 	                display: 'inline-block'
@@ -102,6 +116,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            supportIndeterminate: true,
 	            childrenAfter: true,
+
+	            disabled: false,
 
 	            nextValue: function(oldValue, props) {
 	                if (oldValue === props.checkedValue){
@@ -193,14 +209,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    renderHiddenInput: function(props) {
-	        if (props.name){
 
-	            if (props.shouldSubmit === false || (typeof props.shouldSubmit == 'function' && props.shouldSubmit(props.value, props) === false)){
-	                return
-	            }
-
-	            return React.createElement("input", {type: "hidden", name: props.name, value: props.submitValue})
+	        if (props.shouldSubmit === false || (typeof props.shouldSubmit == 'function' && props.shouldSubmit(props.value, props) === false)){
+	            return
 	        }
+
+	        return React.createElement("input", {type: "hidden", name: props.name, value: props.submitValue})
 	    },
 
 	    renderImg: function(props) {
@@ -238,12 +252,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    handleClick: function(props, event) {
-	        this.trigger(props.value)
+
+	        if (!props.disabled){
+	            this.trigger(props.value, event)
+	        }
 
 	        ;(this.props.onClick || emptyFn)(event)
 	    },
 
-	    trigger: function(value) {
+	    trigger: function(value, event) {
 	        if (!arguments.length){
 	            value = this.prepareValue(this.props, this.state)
 	        }
@@ -329,6 +346,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 
 	    prepareStyle: function(props) {
+
+	        if (props.disabled){
+	            props.defaultCheckboxStyle = assign({}, props.defaultCheckboxStyle, props.defaultDisabledCheckboxStyle)
+	            props.checkboxStyle = assign({}, props.checkboxStyle, props.disabledCheckboxStyle)
+	        }
 
 	        var style = {}
 
