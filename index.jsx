@@ -42,10 +42,16 @@ var App = React.createClass({
     render: function() {
         return (
             <form className="App" style={{padding: 20}} onClick={this.onClick}>
-                <Check name="X" checked={checked} onChange={this.onChange} disabled={true}>
+                <input />
                     checked
+                <Check className="mycheck" name="X" checked={checked} onChange={this.onChange} >
                 </Check>
-                <input type="checkbox" checked={checked} onChange={this.onChange}/>
+
+
+                <label>
+                great
+                <input type="checkbox" checked={checked} onChange={this.onChange} />
+                </label>
 
             </form>
         )

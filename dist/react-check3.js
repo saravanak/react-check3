@@ -248,6 +248,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            iconProps.className = props.iconClassName
 	        }
 
+	        if (!props.children){
+	            //we have no children, so only include the icon in the focus area
+	            iconProps.tabIndex = props.tabIndex || 0
+	        }
+
 	        return iconProps
 	    },
 
@@ -258,6 +263,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        ;(this.props.onClick || emptyFn)(event)
+	    },
+
+	    handleKeyDown: function(props, event) {
+	        if (event.key == ' '){
+	            event.preventDefault()
+	            this.handleClick(props, event)
+	        }
 	    },
 
 	    trigger: function(value, event) {
@@ -297,6 +309,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        props.style       = this.prepareStyle(props)
 
 	        props.onClick = this.handleClick.bind(this, props)
+	        props.onKeyDown = this.handleKeyDown.bind(this, props)
+
+	        if (props.tabIndex == null && props.children){
+	            //if we have children, we want to also include the children inside the focus area
+	            props.tabIndex = 0
+	        }
 
 	        return props
 	    },
