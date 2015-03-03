@@ -52,3 +52,5 @@ You can also use `value`/`defaultValue` instead of `checked`/`defaultChecked`
  * `childrenAfter`: Boolean - whether to render children after the checkbox or not. Defaults to true
  * `shouldSubmit`: Function(value, props) - decide whether the checkbox should be submitted or not.
  * `nextValue`: Function(oldValue, props) - can be used to change the default value order (when `supportIndeterminate` is `true`). Default order is: (checked -> unchecked; unchecked -> indeterminate; indeterminate -> checked)
+ * `onFocus`
+ * `onBlur`

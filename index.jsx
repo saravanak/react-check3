@@ -40,11 +40,22 @@ var App = React.createClass({
     },
 
     render: function() {
+
+        function focus(){
+            console.log('focused')
+        }
+
         return (
             <form className="App" style={{padding: 20}} onClick={this.onClick}>
                 <input />
                     checked
-                <Check className="mycheck" name="X" checked={checked} onChange={this.onChange} >
+                <Check
+                    focusedCheckboxStyle={{color: 'red'}}
+                    className="mycheck"
+                    name="X"
+                    checked={checked}
+                    onChange={this.onChange} onFocus={focus}
+                >test
                 </Check>
 
 

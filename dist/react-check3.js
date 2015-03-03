@@ -65,9 +65,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function emptyFn(){}
 
+	var DISPLAY_NAME = 'ReactCheck3'
+
 	module.exports = React.createClass({
 
-	    displayName: 'ReactCheck3',
+	    displayName: DISPLAY_NAME,
 
 	    propTypes: {
 	        shouldSubmit: React.PropTypes.func,
@@ -97,9 +99,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	            },
 	            defaultCheckboxStyle: {
-	                margin: 3,
 	                display: 'inline-block',
-	                cursor: 'pointer'
+	                boxSizing: 'border-box',
+	                cursor: 'pointer',
+	                margin: 3
 	            },
 
 	            defaultDisabledCheckboxStyle: {
@@ -111,7 +114,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            disabledCheckboxStyle: null,
 
 	            defaultStyle: {
-	                display: 'inline-block'
+	                display  : 'inline-block',
+	                boxSizing: 'border-box',
+	                color    : 'rgb(120, 120, 120)',
+
+	                margin: 2
+	            },
+
+	            defaultFocusedStyle: {
 	            },
 
 	            supportIndeterminate: true,
@@ -167,20 +177,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	    },
 
-	    prepareCheckboxProps: function(props) {
-	        if (!props.children){
-	            return props
-	        }
-
-	        return {
-	            style: assign({}, props.defaultCheckboxStyle, props.checkboxStyle)
-	        }
-	    },
-
 	    renderCheckbox: function(props) {
 	        var checkboxProps = this.prepareCheckboxProps(props)
-	        var input = this.renderHiddenInput(props)
-	        var img = this.renderImg(props)
+	        var input         = this.renderHiddenInput(props)
+	        var img           = this.renderImg(props)
 
 	        return React.createElement("div", React.__spread({},  checkboxProps), 
 	            input, 
@@ -227,10 +227,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    prepareIconStyle: function(props) {
 	        var style = assign({}, props.defaultIconStyle)
 
-	        var width = props.iconWidth || props.iconSize
+	        var width  = props.iconWidth  || props.iconSize
 	        var height = props.iconHeight || props.iconSize
 
-	        style.width = width
+	        style.width  = width
 	        style.height = height
 
 	        assign(style, props.iconStyle)
@@ -248,12 +248,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	            iconProps.className = props.iconClassName
 	        }
 
-	        if (!props.children){
+	        if (!props.disabled && !props.children){
 	            //we have no children, so only include the icon in the focus area
 	            iconProps.tabIndex = props.tabIndex || 0
 	        }
 
 	        return iconProps
+	    },
+
+	    handleFocus: function(event) {
+	        this.setState({
+	            focused: true
+	        })
+
+	        ;(this.props.onFocus || emptyFn)(event)
+	    },
+
+	    handleBlur: function(event) {
+	        this.setState({
+	            focused: false
+	        })
+
+	        ;(this.props.onBlur || emptyFn)(event)
 	    },
 
 	    handleClick: function(props, event) {
@@ -308,13 +324,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        props.submitValue = this.prepareSubmitValue(props)
 	        props.style       = this.prepareStyle(props)
 
-	        props.onClick = this.handleClick.bind(this, props)
+	        props.onClick   = this.handleClick.bind(this, props)
 	        props.onKeyDown = this.handleKeyDown.bind(this, props)
 
-	        if (props.tabIndex == null && props.children){
+	        if (!props.disabled && props.tabIndex == null && props.children){
 	            //if we have children, we want to also include the children inside the focus area
 	            props.tabIndex = 0
 	        }
+
+	        props.onFocus = this.handleFocus
+	        props.onBlur  = this.handleBlur
 
 	        return props
 	    },
@@ -363,24 +382,68 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return submitValue
 	    },
 
-	    prepareStyle: function(props) {
+	    prepareCheckboxProps: function(props) {
+	        if (!props.children){
+	            return props
+	        }
+
+	        var defaultDisabledStyle
+	        var disabledStyle
 
 	        if (props.disabled){
-	            props.defaultCheckboxStyle = assign({}, props.defaultCheckboxStyle, props.defaultDisabledCheckboxStyle)
-	            props.checkboxStyle = assign({}, props.checkboxStyle, props.disabledCheckboxStyle)
+	            defaultDisabledStyle = props.defaultDisabledCheckboxStyle
+	            disabledStyle        = props.disabledCheckboxStyle
 	        }
 
-	        var style = {}
+	        var defaultFocusedStyle
+	        var focusedStyle
 
-	        var defaultCheckboxStyle
-	        var checkboxStyle
+	        if (this.state.focused){
+	            defaultFocusedStyle = props.defaultFocusedCheckboxStyle
+	            focusedStyle        = props.focusedCheckboxStyle
+	        }
+
+	        var defaultStyle = assign({}, props.defaultCheckboxStyle, defaultDisabledStyle, defaultFocusedStyle)
+	        var style        = assign({}, defaultStyle, props.checkboxStyle, disabledStyle, focusedStyle)
+
+	        return {
+	            style: style
+	        }
+	    },
+
+	    prepareStyle: function(props) {
+
+	        var state = this.state
+
+	        //defaultStyle
+	        var defaultStyle = assign({}, props.defaultStyle)
 
 	        if (!props.children){
-	            defaultCheckboxStyle = props.defaultCheckboxStyle
-	            checkboxStyle        = props.checkboxStyle
+	            assign(defaultStyle, props.defaultCheckboxStyle)
 	        }
 
-	        assign(style, defaultCheckboxStyle, props.defaultStyle, checkboxStyle, props.style)
+	        if (props.disabled){
+	            assign(defaultStyle, props.defaultDisabledStyle, !props.children? props.defaultDisabledCheckboxStyle: null)
+	        }
+
+	        if (state.focused){
+	            assign(defaultStyle, props.defaultFocusedStyle, !props.children? props.defaultFocusedCheckboxStyle: null)
+	        }
+
+	        //style
+	        var style = assign({}, defaultStyle, props.style)
+
+	        if (!props.children){
+	            assign(style, props.checkboxStyle)
+	        }
+
+	        if (props.disabled){
+	            assign(style, props.disabledStyle, !props.children? props.disabledCheckboxStyle: null)
+	        }
+
+	        if (state.focused){
+	            assign(style, props.focusedStyle, !props.children? props.focusedCheckboxStyle: null)
+	        }
 
 	        return style
 	    }
