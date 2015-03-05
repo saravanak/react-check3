@@ -93,6 +93,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getDefaultProps: function() {
 
 	        return {
+	            'data-display-name': DISPLAY_NAME,
+
 	            shouldSubmit: function(value, props) {
 	                if (!props.name || props.disabled){
 	                    return false
@@ -167,9 +169,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            iconWidth: null,
 	            iconHeight: null,
 
-	            checkedIconSrc: __webpack_require__(3),
-	            uncheckedIconSrc: __webpack_require__(4),
-	            indeterminateIconSrc: __webpack_require__(5)
+	            // checkedIconSrc: require('../style/checked.png'),
+	            checkedIconSrc: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAY0lEQVR4Xr2T0QqAIAxFb7EPbV9Wf2oPBedhuCEDL4iCnjNjdkgaamZ02FPNbBfc3yC2CF8izg1ChQomllWYwA97008ASOAgcADmABdd8P+gEjgTIMnhuo0e1gsCwB1Puf07v5tzFWpkt96mAAAAAElFTkSuQmCC",
+
+	            // uncheckedIconSrc: require('../style/unchecked.png'),
+	            uncheckedIconSrc: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAJklEQVR4Xu3TMQEAAAiEQLR/53cwAusT4DYGCCYJZJEVKFDg0zsf1TMEGcWLZyUAAAAASUVORK5CYII=",
+
+	            // indeterminateIconSrc: require('../style/indeterminate.png')
+	            indeterminateIconSrc: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAANElEQVR4Xu2TMQoAIBDDUvH/Xz5nV7OccHlAaKENUBikoBYSLdgPlaITjOCm5w7yVwV95wPWUAUe/arBgwAAAABJRU5ErkJggg=="
 
 	            //checkedSubmitValue
 	            //uncheckedSubmitValue
@@ -486,24 +493,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		return to;
 	};
 
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAY0lEQVR4Xr2T0QqAIAxFb7EPbV9Wf2oPBedhuCEDL4iCnjNjdkgaamZ02FPNbBfc3yC2CF8izg1ChQomllWYwA97008ASOAgcADmABdd8P+gEjgTIMnhuo0e1gsCwB1Puf07v5tzFWpkt96mAAAAAElFTkSuQmCC"
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAJklEQVR4Xu3TMQEAAAiEQLR/53cwAusT4DYGCCYJZJEVKFDg0zsf1TMEGcWLZyUAAAAASUVORK5CYII="
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAANElEQVR4Xu2TMQoAIBDDUvH/Xz5nV7OccHlAaKENUBikoBYSLdgPlaITjOCm5w7yVwV95wPWUAUe/arBgwAAAABJRU5ErkJggg=="
 
 /***/ }
 /******/ ])
