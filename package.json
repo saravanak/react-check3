@@ -2,7 +2,7 @@
   "name": "react-check3",
   "version": "0.1.1",
   "description": "React Checkbox with 3 states",
-  "main": "lib/index.js",
+  "main": "dist/react-check3.js",
   "scripts": {
     "test": "make",
     "lib": "gulp",
